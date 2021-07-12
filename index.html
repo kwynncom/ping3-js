@@ -58,22 +58,20 @@
 		}
 		
 		diff(i) { 	
-			const d = time() - this.bar[i].asof;
-			const isnum = !Number.isNaN(d);
-			if (isnum) return d;
-			else return false;
-		}
-		
-		adjn(d) {
-			if (d === false) return;
-			if (d >= 0) return;
-			
+			const draw = time() - this.bar[i].asof;
+			const isnum = !Number.isNaN(draw);
+			if (!isnum) return false;
+
+			let d = draw;
+			d += this.toff;
+			if (d >= 0) return d;
 			this.toff = Math.abs(d);
+			d += this.toff;
+			return d;
 		}
 		
 		disp20(i, isfirst) {
 			const d = this.diff(i);
-			this.adjn(d);
 			let s = '--';
 			if (d !== false) s = this.ndisp30(d, isfirst);
 			else this.bar[i].active = false;
@@ -88,7 +86,6 @@
 			let s;
 
 			if (d < 3000 || (isfirst && d < 30000)) {
-				d += this.toff;
 				const p = 2
 				const n1 = roundTo(d / 1000, p);
 				s    = n1.toFixed(p);
